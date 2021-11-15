@@ -32,11 +32,11 @@ class Game extends React.Component {
     }
 
     finishGame() {
+        this.setState({ score: 0})
         this.setState({ gameStage: 'startPage' })
     }
 
     nextPart() {
-        this.setState({ score: 0})
         this.setState({ gameStage: 'crossWord' })
     }
 
