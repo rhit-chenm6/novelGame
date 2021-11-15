@@ -1,4 +1,4 @@
-import React from 'react';
+import React, { Ref } from 'react';
 import './index.css';
 import mytext from './plot.js';
 import music from './bensound-littleidea.mp3';
@@ -22,6 +22,8 @@ class Game extends React.Component {
         this.quitGame = this.quitGame.bind(this);
         this.checkMCQ = this.checkMCQ.bind(this);
         this.nextPart = this.nextPart.bind(this);
+        this.addScore = this.addScore.bind(this);
+        this.finishGame = this.finishGame.bind(this);
 
     }
 
@@ -29,7 +31,12 @@ class Game extends React.Component {
         this.setState({ gameStage: 'MCQ' })
     }
 
+    finishGame() {
+        this.setState({ gameStage: 'startPage' })
+    }
+
     nextPart() {
+        this.setState({ score: 0})
         this.setState({ gameStage: 'crossWord' })
     }
 
@@ -39,15 +46,30 @@ class Game extends React.Component {
 
     checkMCQ(id, choice, answer) {
         if (choice === answer) {
-            const newScore = this.state.score += 1;
-            this.setState({ score: newScore })
+            this.addScore();
             console.log(this.state.score);
         } else {
-            const newScore = this.state.score -= 1;
-            this.setState({ score: newScore })
+            this.deductScore();
         }
         const mcqDiv = document.getElementById(id);
         mcqDiv.style.display = 'none';
+    }
+
+    // checkCrossWord(direction, number, answer) {
+    //     const crossWordPad = document.getElementById("crossWord");
+    //     if (crossWordPad.onCrosswordCorrect) {
+    //         console.log("all correct");
+    //     }
+    // }
+
+    deductScore() {
+        const newScore = this.state.score -= 1;
+        this.setState({ score: newScore });
+    }
+
+    addScore() {
+        const newScore = this.state.score += 1;
+        this.setState({ score: newScore });
     }
 
     render() {
@@ -71,19 +93,37 @@ class Game extends React.Component {
         const data = {
             across: {
                 1: {
-                    clue: 'one plus one',
-                    answer: 'TWO',
-                    row: 0,
+                    clue: 'the hall hosts art events',
+                    answer: 'HATFIELD',
+                    row: 1,
+                    col: 0,
+                },
+                2: {
+                    clue: 'the fist name of the web programming online class\'\s professor',
+                    answer: 'ELIZA',
+                    row: 3,
+                    col: 3,
+                },
+                3: {
+                    clue: 'the event on the night before homecoming',
+                    answer: 'BONFIRE',
+                    row: 6,
                     col: 0,
                 },
             },
             down: {
-                2: {
-                    clue: 'three minus two',
-                    answer: 'ONE',
-                    row: 0,
-                    col: 2,
+                4: {
+                    clue: 'last name of CS department head',
+                    answer: 'MELLOR',
+                    row: 2,
+                    col: 3,
                 },
+                5: {
+                    clue: 'the residence hall with only male',
+                    answer: 'DEMING',
+                    row: 0,
+                    col: 5,
+                }
             },
         }
 
@@ -97,8 +137,12 @@ class Game extends React.Component {
                     <source type="audio/mp3" src={music} />
                 </audio>
                 <Text text={this.state.text} score={this.state.score} />
-                <Mission state={this.state.gameStage} startGame={this.startGame} quitGame={this.quitGame}
-                    mcqs={rows} crossWordData={data} nextPart={this.nextPart} />
+                <Mission stage={this.state.gameStage} startGame={this.startGame} quitGame={this.quitGame}
+                    mcqs={rows} addScore={this.addScore} crossWordData={data} nextPart={this.nextPart}
+                    finishGame={this.finishGame} />
+                {/* {this.state.gameStage = 'finish' &&
+                    <POPupwindow content="finished!" handlePopUpClose={this.closeGame}/>
+                } */}
             </div>
         );
     }
@@ -125,22 +169,26 @@ function MCQ(props) {
 }
 
 function Mission(props) {
+
     return (
         <div>
-            {(props.state === 'MCQ') &&
+            {(props.stage == 'MCQ') &&
                 <div>
                     {props.mcqs}
                     <button onClick={props.nextPart}>Next Part</button>
 
                 </div>
             }
-            {(props.state === 'crossWord') &&
-                <Crossword data={props.crossWordData} />
+            {(props.stage == 'crossWord') &&
+                <div>
+                    <Crossword id="crossWord" onCorrect={props.addScore}
+                        data={props.crossWordData}
+                    />
+                    <button onClick={props.finishGame}>Finish</button>
+                </div>
+
             }
-            {(props.state === 'fillInBlank') &&
-                <h1>This is a space for fill in blank page</h1>
-            }
-            {(props.state == 'startPage') &&
+            {(props.stage == 'startPage') &&
                 <div>
                     <button onClick={props.startGame}>Start</button> <br />
                     <button onClick={props.quitGame}>Quit</button>
