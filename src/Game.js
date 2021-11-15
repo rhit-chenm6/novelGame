@@ -11,8 +11,6 @@ class Game extends React.Component {
             mcqs: [{ id: "mcq1", question: 'When is Rose-Hulman established?', choice1: '1877', choice2: '1864', choice3: '1874', answer: '1874' },
             { id: "mcq2", question: 'How many years have Rose-Hulman been ranked No. 1 Engineering College?', choice1: '22', choice2: '23', choice3: '24', answer: '23' },
             { id: "mcq3", question: 'What is Rose-Hulman\'\s motto', choice1: 'Labor and Knowledge', choice2: 'Labor and Science', choice3: 'Science and Knowledge', answer: 'Labor and Knowledge' },
-            { id: "mcq4", question: 'test question4', choice1: 'correct', choice2: 'wrong', choice3: 'wrong', answer: 'correct' },
-            { id: "mcq5", question: 'test question5', choice1: 'correct', choice2: 'wrong', choice3: 'wrong', answer: 'correct' }
             ],
             gameStage: 'startPage',
             text: mytext,
@@ -55,12 +53,12 @@ class Game extends React.Component {
         mcqDiv.style.display = 'none';
     }
 
-    // checkCrossWord(direction, number, answer) {
-    //     const crossWordPad = document.getElementById("crossWord");
-    //     if (crossWordPad.onCrosswordCorrect) {
-    //         console.log("all correct");
-    //     }
-    // }
+    checkCrossWord(direction, number, answer) {
+        const crossWordPad = document.getElementById("crossWord");
+        if (crossWordPad.onCrosswordCorrect) {
+            console.log("all correct");
+        }
+    }
 
     deductScore() {
         const newScore = this.state.score -= 1;
@@ -131,7 +129,7 @@ class Game extends React.Component {
             <div>
                 <audio
                     ref="audio_tag"
-                    autoPlay={false}
+                    autoPlay={true}
                     loop={true}
                     controls={true} >
                     <source type="audio/mp3" src={music} />
